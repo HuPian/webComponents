@@ -1,0 +1,38 @@
+<!DOCTYPE>
+<html>
+<head>
+<link rel="import" href="elements.html">
+<link rel="import" href="textBoxComp.html">
+<link rel="import" href="testTemp.html">
+</head>
+
+<script>
+ var model={
+	value:1
+ }
+ var valueChanged=function(value){
+	model.value=Number(value);
+	document.querySelector("#currentValue").innerText =model.value;
+ }
+ 
+ var plusValue=function(){
+	document.querySelector("input-with-label").setAttribute('value',++model.value);
+	document.querySelector("#currentValue").innerText =model.value;
+ }
+</script>
+
+<body>
+	<say-hi name="Eric"></say-hi>
+	 <shadow-element>
+		<div>( I'm in the light dom )</div>
+     </shadow-element>
+	<test-temp></test-temp>
+	<input-with-label label="test web component" value="1" changed="valueChanged"></input-with-label>
+	<button onclick="plusValue()"> plus</button> <span id="currentValue"></span>
+</body>
+
+
+</style>
+
+
+</html>
