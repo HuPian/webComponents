@@ -3,7 +3,7 @@
    .warpper{
 	  display:flex;
 	  flex-direction:row;
-	  justify-content:space-between;
+	  justify-content:;
 	  padding:10px;
 	  color:red;
    }
@@ -15,8 +15,8 @@
    }
 </style>
 <div class="warpper">
-<label></label>
-<input type="text" value="" onchange=""></input>
+	<label></label>
+	<input type="number" onchange=""></input>
 </div>
 
 </template>
@@ -25,35 +25,36 @@
  (function(){
   var content=document.currentScript.ownerDocument.querySelector("#temp").content;
   var interfaceEle=Object.create(HTMLElement.prototype);
-
-  var updateTempDom=function(clonedNode,label,value,changeCallback){
-	label&&(clonedNode.querySelector("label").textContent=label);
-	var inputEle=clonedNode.querySelector("input");
-	value&&(inputEle.value=value);
-	value&&(inputEle.setAttribute("value",value));
-	changeCallback&&(inputEle.setAttribute("onchange",changeCallback+"(this.value)"));
-  }
   interfaceEle.observedAttributes=["label","value","changed"];
   interfaceEle.attributeChangedCallback=function(name,oldValue,newValue){
      if(name==="label"){
-	    var label=newValue;
+		this.shadowRoot.querySelector("label").textContent=newValue
 	 }else if(name==="value"){
-	    var value=newValue;
+		this.shadowRoot.querySelector("input").value=Number(newValue);
 	 }else if(name==="changed"){
-		var changeCallback=newValue;
+		this.shadowRoot.querySelector("input").setAttribute("onchange",newValue+"(this.value)")
 	 }
-	 updateTempDom(this.shadowRoot,label,value,changeCallback);
   }
   
   interfaceEle.createdCallback=function(){
-     var shadowRoot=this.createShadowRoot();
+     //// clone template node and import to document
+     var clonedNode=document.importNode(content,true);
+	 
+	 //// set cloneNode atttibutes
 	 var label=this.attributes['label'].value;
 	 var value=this.attributes['value'].value;
 	 var changeCallback=this.attributes['changed'].value;
-     var clonedNode=document.importNode(content,true);
-	 updateTempDom(clonedNode,label,value,changeCallback);
+	 
+	 clonedNode.querySelector("label").textContent=label
+	 var inputEle=clonedNode.querySelector("input");
+	 inputEle.value=Number(value);
+	 inputEle.setAttribute("onchange",changeCallback+"(this.value)");
+	 
+	 //// insert cloneNode into shadowRoot
+	 var shadowRoot=this.createShadowRoot();
 	 shadowRoot.appendChild(clonedNode);
   }
+  ////register custom tag
  document.registerElement("input-with-label",{prototype:interfaceEle});
  }());
 </script>
