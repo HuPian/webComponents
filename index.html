@@ -5,21 +5,13 @@
 <link rel="import" href="textBoxComp.html">
 <link rel="import" href="testTemp.html">
 </head>
+<style>
+.textBoxArea{
+  color:green!important;
+}
 
-<script>
- var model={
-	value:1
- }
- var valueChanged=function(value){
-	model.value=Number(value);
-	document.querySelector("#currentValue").innerText =model.value;
- }
- 
- var plusValue=function(){
-	document.querySelector("input-with-label").setAttribute('value',++model.value);
-	document.querySelector("#currentValue").innerText =model.value;
- }
-</script>
+</style>
+
 
 <body>
 	<say-hi name="Eric"></say-hi>
@@ -27,9 +19,43 @@
 		<div>( I'm in the light dom )</div>
      </shadow-element>
 	<test-temp></test-temp>
-	<input-with-label label="test web component" value="1" changed="valueChanged"></input-with-label>
-	<button onclick="plusValue()"> plus</button> <span id="currentValue"></span>
+	<div class='textBoxArea'>
+		<input-with-label id="input-with-label1" label="value" value="1" changed="valueChanged"></input-with-label>
+		<button onclick="plusValue()"> plus</button> <span id="currentValue"></span>
+		
+		<input-with-label id="input-with-label2" label="count" value="1" changed="countChanged"></input-with-label>
+		<span id="currentCount"></span>
+	</div>
+	<div class="wrapper">what is mine color? </div>
+
 </body>
+
+<script>
+ var model={
+	value:1,
+	count:1
+ };
+ var valueChanged=function(value){
+	model.value=Number(value);
+	document.querySelector("#input-with-label1").setAttribute('value',model.value);
+	document.querySelector("#currentValue").innerText =model.value;
+ };
+ 
+ var plusValue=function(){
+	document.querySelector("#input-with-label1").setAttribute('value',++model.value);
+	document.querySelector("#currentValue").innerText =model.value;
+ };
+ 
+ var countChanged=function(count){
+	model.count=Number(count);
+	document.querySelector("#input-with-label2").setAttribute('value',model.count);
+	document.querySelector("#currentCount").innerText =model.count;
+ };
+ 
+ document.querySelector("#currentCount").innerText =model.count;
+ 
+
+</script>
 
 
 </style>

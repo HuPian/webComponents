@@ -1,15 +1,17 @@
 <template  id="temp">
 <style>
    .warpper{
-	  display:flex
+	  display:flex;
 	  flex-direction:row;
 	  justify-content:space-between;
+	  padding:10px;
+	  color:red;
    }
    label{
-	  flex:1,1;
+	  flex:1 1;
    }
    input{
-	  flex:2,2
+	  flex:2 2;
    }
 </style>
 <div class="warpper">
@@ -23,40 +25,33 @@
  (function(){
   var content=document.currentScript.ownerDocument.querySelector("#temp").content;
   var interfaceEle=Object.create(HTMLElement.prototype);
-  var label= undefined;
-  var value= undefined;
-  var changeCallback=undefined;
-  var updateTempDom=function(clonedNode){
-	clonedNode.querySelector("label").textContent=label;
+
+  var updateTempDom=function(clonedNode,label,value,changeCallback){
+	label&&(clonedNode.querySelector("label").textContent=label);
 	var inputEle=clonedNode.querySelector("input");
-	inputEle.value=value;
-	inputEle.setAttribute("value",value);
-	inputEle.setAttribute("onchange","valueChanged(this.value)")
+	value&&(inputEle.value=value);
+	value&&(inputEle.setAttribute("value",value));
+	changeCallback&&(inputEle.setAttribute("onchange",changeCallback+"(this.value)"));
   }
-  var inputValueChanged=function(newValue){
-		value=newValue;
-		interfaceEle.setAttribute("value",value);
-		changeCallback(value);
-  };
   interfaceEle.observedAttributes=["label","value","changed"];
   interfaceEle.attributeChangedCallback=function(name,oldValue,newValue){
      if(name==="label"){
-	    label=newValue;
+	    var label=newValue;
 	 }else if(name==="value"){
-	    value=newValue;
+	    var value=newValue;
 	 }else if(name==="changed"){
-		changeCallback=newValue;
+		var changeCallback=newValue;
 	 }
-	 updateTempDom(this.shadowRoot);
+	 updateTempDom(this.shadowRoot,label,value,changeCallback);
   }
   
   interfaceEle.createdCallback=function(){
      var shadowRoot=this.createShadowRoot();
-	 label=this.attributes['label'].value;
-	 value=this.attributes['value'].value;
-	 changeCallback=this.attributes['changed'].value;
+	 var label=this.attributes['label'].value;
+	 var value=this.attributes['value'].value;
+	 var changeCallback=this.attributes['changed'].value;
      var clonedNode=document.importNode(content,true);
-	 updateTempDom(clonedNode);
+	 updateTempDom(clonedNode,label,value,changeCallback);
 	 shadowRoot.appendChild(clonedNode);
   }
  document.registerElement("input-with-label",{prototype:interfaceEle});
